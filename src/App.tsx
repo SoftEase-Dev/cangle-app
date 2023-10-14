@@ -35,6 +35,14 @@ function App() {
               </div>
 
               <div className='w-full flex flex-col text-white'>
+                <div className='w-full justify-between gap-3 flex flex-row'>
+                  <button className='bg-black w-full flex justify-center mt-5 rounded-lg p-3'>
+                    UP
+                  </button>
+                  <button className='bg-black w-full flex justify-center mt-5 rounded-lg p-3'>
+                    DOWN
+                  </button>
+                </div>
                 <button className='bg-black flex justify-center mt-5 rounded-lg p-3'>
                   Capture Device
                 </button>
