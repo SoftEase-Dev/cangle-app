@@ -6,10 +6,8 @@ export default {
   ],
   theme: {
     extend: {
-      borderColor: {
-        borderColor: {
-          'arrowUp': 'transparent transparent #000 transparent',
-        }
+      fontFamily: {
+        'jakartaSans': 'Plus Jakarta Sans'
       }
     },
   },
