@@ -3,13 +3,18 @@ import './index.css'
 import { getDevice } from './features/service/getDevice'
 import { dev, device } from './types/deviceType'
 import { getCaptures } from './features/service/getStatus'
-import { captures, cptrs } from './types/captures'
+import { cptrs } from './types/captures'
 import { postDevice } from './features/service/postDevice'
+import HistoryCard from './components/captures/history'
+import { historyDummy } from './components/dummy/historyDummy'
+import { filterDataByLatestDate } from './components/formatter/filterNew'
 
 function App() {
   const [dataDevice, setDataDevice] = useState<dev>(device)
-  const [dataCaptures, setDataCaptures] = useState<cptrs>(captures)
+  const [image, setImage] = useState<cptrs>()
+  const [dataCaptures, setDataCaptures] = useState<cptrs>()
   const [loading, setLoading] = useState<boolean>(false)
+  const slice = historyDummy.slice(0, 10)
 
   // console.log(dataDevice.data.attributes.left)
   // console.log(dataDevice.data.attributes.right)
@@ -33,7 +38,8 @@ function App() {
     const res = await getCaptures()
 
     if (res) {
-      setDataCaptures(res.data)
+      const sliceData = res.data.slice(0, 10)
+      setDataCaptures(sliceData)
       setLoading(false)
     }
   }
@@ -65,8 +71,11 @@ function App() {
         }
       });
     }, 500);
-
   }
+
+  useEffect(() => {
+  //   const res = dataCaptures?.data.map(data => {filterDataByLatestDate(data.attributes.createdAt)} )
+  // }, [])
 
   useEffect(() => {
     postController()
@@ -86,9 +95,16 @@ function App() {
 
             </div>
 
-            <div className='border-2 border-slate-600 bg-slate-50 rounded-lg h-[50%] w-full'>
-              <div className='max-h-[300px] p-3 overflow-y-auto flex flex-col'>
+            <div className='border-2 border-slate-600 bg-slate-50 rounded-lg h-[70%] w-full'>
+              <div className='max-h-[250px] p-3 overflow-y-auto flex flex-col'>
                 <h1 className='font-bold text-xl font-jakartaSans'>History</h1>
+                {
+                  dataCaptures?.data.map((data, index) => {
+                    return (
+                      <HistoryCard key={index} data={data} />
+                    )
+                  })
+                }
               </div>
             </div>
           </div>
