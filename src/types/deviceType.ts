@@ -7,7 +7,7 @@ export const device = {
             right: false,
             left: false,
             up: false,
-            down: false
+            down: false,
         }
     }
 }
@@ -21,7 +21,7 @@ export interface dev {
             right: boolean,
             left: boolean,
             up: boolean,
-            down: boolean
+            down: boolean,
         }
     }
 }

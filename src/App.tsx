@@ -6,15 +6,13 @@ import { getCaptures } from './features/service/getStatus'
 import { cptrs } from './types/captures'
 import { postDevice } from './features/service/postDevice'
 import HistoryCard from './components/captures/history'
-import { historyDummy } from './components/dummy/historyDummy'
-import { filterDataByLatestDate } from './components/formatter/filterNew'
 
 function App() {
   const [dataDevice, setDataDevice] = useState<dev>(device)
   const [image, setImage] = useState<cptrs>()
   const [dataCaptures, setDataCaptures] = useState<cptrs>()
   const [loading, setLoading] = useState<boolean>(false)
-  const slice = historyDummy.slice(0, 10)
+  const sliceData = dataCaptures?.data.slice(0, 10)
 
   // console.log(dataDevice.data.attributes.left)
   // console.log(dataDevice.data.attributes.right)
@@ -22,6 +20,7 @@ function App() {
   // console.log(dataDevice.data.attributes.forward)
   // console.log(dataDevice.data.attributes.backward)
   // console.log(dataDevice.data.attributes.down)
+  // console.log(dataDevice.data.attributes.status)
 
   const resDevice = async () => {
     setLoading(true)
@@ -38,15 +37,14 @@ function App() {
     const res = await getCaptures()
 
     if (res) {
-      const sliceData = res.data.slice(0, 10)
-      setDataCaptures(sliceData)
+      console.log(res.data.data[0].attributes)
+      setDataCaptures(res.data)
       setLoading(false)
     }
   }
 
   const postController = async () => {
-    const res = await postDevice(dataDevice)
-    console.log(res?.data)
+    await postDevice(dataDevice)
   }
 
   const handleClick = (button: string) => {
@@ -60,22 +58,32 @@ function App() {
       }
     });
 
-    setTimeout(() => {
-      setDataDevice({
-        data: {
-          ...dataDevice.data,
-          attributes: {
-            ...dataDevice.data.attributes,
-            [button]: false,
+    if (button === 'status') {
+      setTimeout(() => {
+        setDataDevice({
+          data: {
+            ...dataDevice.data,
+            attributes: {
+              ...dataDevice.data.attributes,
+              [button]: false,
+            }
           }
-        }
-      });
-    }, 500);
+        });
+      }, 5000);
+    } else {
+      setTimeout(() => {
+        setDataDevice({
+          data: {
+            ...dataDevice.data,
+            attributes: {
+              ...dataDevice.data.attributes,
+              [button]: false,
+            }
+          }
+        });
+      }, 1000);
+    }
   }
-
-  useEffect(() => {
-  //   const res = dataCaptures?.data.map(data => {filterDataByLatestDate(data.attributes.createdAt)} )
-  // }, [])
 
   useEffect(() => {
     postController()
@@ -84,7 +92,7 @@ function App() {
   useEffect(() => {
     resDevice()
     resCaptures()
-  }, [])
+  }, [dataDevice.data.attributes.status])
 
   return (
     <div className='max-w-screen-2xl mx-12 my-5'>
@@ -92,14 +100,14 @@ function App() {
         <div className='flex flex-row gap-5 w-full justify-between'>
           <div className='flex flex-col w-full gap-5'>
             <div className='border-2 border-slate-600 bg-slate-50 rounded-lg h-full w-full'>
-
+              <img className='w-full max-h-[400px]' src={`http://193.203.164.177:1337${dataCaptures?.data[0]?.attributes.capturedImage.data.attributes.formats.large.url}`} alt="gambar" />
             </div>
 
             <div className='border-2 border-slate-600 bg-slate-50 rounded-lg h-[70%] w-full'>
               <div className='max-h-[250px] p-3 overflow-y-auto flex flex-col'>
                 <h1 className='font-bold text-xl font-jakartaSans'>History</h1>
                 {
-                  dataCaptures?.data.map((data, index) => {
+                  sliceData?.map((data, index) => {
                     return (
                       <HistoryCard key={index} data={data} />
                     )
@@ -108,9 +116,10 @@ function App() {
               </div>
             </div>
           </div>
-          <div className='w-[50%] flex flex-col gap-10'>
-            <div className='border-2 border-slate-600 bg-slate-50 rounded-lg h-[250px] p-3'>
+          <div className='w-[40%] flex flex-col gap-10'>
+            <div className='border-2 text-center border-slate-600 bg-slate-50 rounded-lg h-[250px] p-3 flex flex-col'>
               <h1 className='font-bold text-xl font-jakartaSans'>Result</h1>
+              <h3 className='h-full items-center flex justify-center text-7xl'>{dataCaptures?.data[0].attributes.result}</h3>
             </div>
 
             {/* Arrow Controller */}
@@ -120,7 +129,7 @@ function App() {
                   onClick={() => handleClick('forward')}
                   className='arrow hover:border-[#f0607f] up' />
               </div>
-              <div className='flex flex-row justify-between w-[40%]'>
+              <div className='flex flex-row justify-between w-[50%]'>
                 <button
                   onClick={() => handleClick('left')}
                   className='arrow hover:border-[#f0607f] left' />
@@ -147,7 +156,9 @@ function App() {
                     DOWN
                   </button>
                 </div>
-                <button className='bg-[#0030C7] hover:bg-[#4f67b6] flex justify-center mt-5 rounded-lg p-3'>
+                <button
+                  onClick={() => handleClick('status')}
+                  className='bg-[#0030C7] hover:bg-[#4f67b6] flex justify-center mt-5 rounded-lg p-3'>
                   Capture Device
                 </button>
               </div>
