@@ -1,7 +1,7 @@
 import { historyDummy } from "../../dummy/historyDummy";
 
 
-export function filterDataByLatestDate(date: string) {
+export function filterDataByLatestDate() {
     if (historyDummy.length === 0) {
         return [];
     }
