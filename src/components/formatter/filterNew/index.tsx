@@ -10,11 +10,11 @@ export function filterDataByLatestDate() {
         const dateA = new Date(a.attributes.createdAt).getTime();
         const dateB = new Date(b.attributes.createdAt).getTime();
         if (dateA < dateB) {
-            return 1; // Mengembalikan 1 jika tanggal a lebih baru dari tanggal b
+            return 1;
         } else if (dateA > dateB) {
-            return -1; // Mengembalikan -1 jika tanggal a lebih lama dari tanggal b
+            return -1;
         } else {
-            return 0; // Mengembalikan 0 jika tanggal a sama dengan tanggal b
+            return 0;
         }
     });
 
