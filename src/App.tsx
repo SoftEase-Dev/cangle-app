@@ -72,6 +72,7 @@ function App() {
       }, 1000);
   }
 
+
   useEffect(() => {
     postController()
   }, [dataDevice])
